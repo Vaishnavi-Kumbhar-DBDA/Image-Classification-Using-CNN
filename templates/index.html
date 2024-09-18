@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Classification</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: url('file:///home/vaishnavi/Pycharm/image/images/background_image.jpg') no-repeat center center fixed;
+            background-size: cover; /* Cover the entire viewport */
+            color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.9); /* Slightly transparent white */
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.3);
+            width: 90%;
+            max-width: 600px;
+            text-align: center;
+        }
+
+        h1 {
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        input[type="file"] {
+            margin: 20px 0;
+        }
+
+        input[type="submit"] {
+            padding: 10px 20px;
+            border: none;
+            background-color: #007bff;
+            color: #fff;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #0056b3;
+        }
+
+        .image-preview {
+            margin-top: 20px;
+            display: none;
+        }
+
+        .image-preview img {
+            max-width: 100%;
+            border-radius: 8px;
+        }
+
+        .spinner {
+            display: none;
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            border-radius: 50%;
+            border-top: 4px solid #007bff;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .feedback {
+            margin-top: 20px;
+            color: red;
+        }
+    </style>
+    <script>
+        function handleFileSelect(event) {
+            const file = event.target.files[0];
+            const preview = document.getElementById('imagePreview');
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    preview.src = e.target.result;
+                    preview.parentElement.style.display = 'block';
+                }
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function showSpinner() {
+            document.getElementById('spinner').style.display = 'block';
+        }
+
+        function hideSpinner() {
+            document.getElementById('spinner').style.display = 'none';
+        }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h1>Upload an Image for Classification</h1>
+        <form action="/predict" method="post" enctype="multipart/form-data" onsubmit="showSpinner()">
+            <input type="file" name="file" accept="image/*" onchange="handleFileSelect(event)" required>
+            <input type="submit" value="Upload">
+            <div class="image-preview">
+                <img id="imagePreview" src="" alt="Image Preview">
+            </div>
+            <div id="spinner" class="spinner"></div>
+            <!-- Feedback messages -->
+            <div id="feedback" class="feedback"></div>
+        </form>
+    </div>
+    <script>
+        // Clear feedback and spinner when the page loads
+        window.onload = function() {
+            document.getElementById('feedback').textContent = '';
+            hideSpinner();
+        }
+    </script>
+</body>
+</html>
+
